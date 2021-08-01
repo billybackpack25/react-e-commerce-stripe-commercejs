@@ -15,23 +15,25 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
     const [checkoutToken, setCheckoutToken] = useState(null);
     const [shippingData, setShippingData] = useState({});
     const classes = useStyles();
-    const history = useHistory();
+    let history = useHistory();
 
     useEffect(() => {
         const generateToken = async () => {
             try {
-                console.log('Cart ID: ', cart.id);
+                //console.log('Cart ID: ', cart.id);
                 const token = await commerce.checkout.generateToken(cart.id, { type: 'cart' })
                 setCheckoutToken(token);
             } catch (error) {
-                console.log('ERROR Checkout l-26:',error);
+                //console.log('ERROR Checkout l-26:',error);
                 history.push('/');
             }
         }
         if (cart.id && cart.total_items > 0) {
             generateToken();
         }
-    }, [cart]);
+        
+        if (cart.total_items === 0) history.push('/'); 
+    }, [cart, history]);
 
     const nextStep = () => setActiveStep(prev => prev + 1)
     const backStep = () => setActiveStep(prev => prev - 1)
